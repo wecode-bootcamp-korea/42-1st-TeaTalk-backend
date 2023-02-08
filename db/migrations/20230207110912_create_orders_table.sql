@@ -2,7 +2,7 @@
 CREATE TABLE orders (
   id int PRIMARY KEY NOT NULL AUTO_INCREMENT,
   user_id int NOT NULL,
-  price_amount int,
+  price_amount decimal(10,2),
   delivery_price decimal(10,2),
   delivery_id int,
   CONSTRAINT orders_delivery_id_fkey FOREIGN KEY (delivery_id) REFERENCES deliveries(id),
