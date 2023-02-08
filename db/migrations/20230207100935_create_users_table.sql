@@ -8,7 +8,7 @@ CREATE TABLE users (
   password binary(72) NOT NULL,
   birthdate varchar(255),
   gender varchar(255),
-  point decimal(10,0),
+  point decimal(10,2),
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
   CONSTRAINT users_email_ukey UNIQUE (email),

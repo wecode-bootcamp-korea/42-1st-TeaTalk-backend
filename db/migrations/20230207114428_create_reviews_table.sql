@@ -3,7 +3,7 @@ CREATE TABLE reviews (
   id int PRIMARY KEY NOT NULL AUTO_INCREMENT,
   user_id int,
   product_id int,
-  marks int,
+  rating int,
   comments varchar(2700),
   order_id int,
   CONSTRAINT reviews_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id),

@@ -4,7 +4,7 @@ CREATE TABLE order_items (
   product_id int,
   order_id int,
   quantity int,
-  total_price decimal,
+  total_price decimal(10,2),
   cart_id int,
   CONSTRAINT order_items_product_id_fkey FOREIGN KEY (product_id) REFERENCES products(id),
   CONSTRAINT order_items_order_id_fkey FOREIGN KEY (order_id) REFERENCES orders(id),
