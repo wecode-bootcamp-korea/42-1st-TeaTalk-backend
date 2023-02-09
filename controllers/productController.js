@@ -6,9 +6,9 @@ const allProducts = async (req, res) => {
   const pageSize = parseInt(pageInfo.pageSize);
   const category = pageInfo.category;
   const sub = pageInfo.sub;
-  const type = pageInfo.type;
-  console.log(category);
-  console.log(sub);
+  const ty = pageInfo.type;
+  const type = ty ? ty.split(",") : [];
+  console.log(type);
   try {
     if (!page || !pageSize) {
       return res.status(404).json({ message: "Page_ERROR" });
@@ -17,7 +17,8 @@ const allProducts = async (req, res) => {
       page,
       pageSize,
       category,
-      sub
+      sub,
+      type
     );
 
     res.status(200).json({ data: lists });
