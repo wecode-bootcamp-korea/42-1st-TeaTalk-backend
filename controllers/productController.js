@@ -6,6 +6,7 @@ const allProducts = async (req, res) => {
   const pageSize = parseInt(pageInfo.pageSize);
   const category = pageInfo.category;
   const sub = pageInfo.sub;
+  const type = pageInfo.type;
   console.log(category);
   console.log(sub);
   try {
