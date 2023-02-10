@@ -2,9 +2,8 @@ const userService = require("../services/userService");
 
 const createUser = async (req, res) => {
   try {
-    const { account, password, email, name, phoneNum, birthdate } = req.body;
-    const gender = "W";
-    console.log(req.body);
+    const { account, password, email, name, phoneNum, birthdate, gender } =
+      req.body;
     if (
       !account ||
       !password ||
@@ -30,7 +29,7 @@ const createUser = async (req, res) => {
     );
     return res.status(200).json({ message: "createUser" });
   } catch (err) {
-    return res.status(err.statusCode || 400).json(err.message);
+    return res.status(err.statusCode).json(err.message);
   }
 };
 

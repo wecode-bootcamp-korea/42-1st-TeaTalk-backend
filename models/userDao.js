@@ -23,7 +23,6 @@ const createUser = async (
       `,
       [account, hashedPw, email, name, phoneNum, birthdate, gender]
     );
-    console.log(result);
     return result;
   } catch (err) {
     const error = new Error("INVALID DATA INPUT!!");
