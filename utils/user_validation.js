@@ -1,18 +1,7 @@
-const userDao = require("../models/userDao");
-
-const accountExistanceCheck = async (account) => {
-  const [accountExistanceCheck] = await userDao.login(account);
-
-  if (accountExistanceCheck) {
-    const error = new Error("THIS ID EXISTS ALREADY!!");
-    error.statusCode = 400;
-    throw error;
-  }
-};
-
 const emailValidation = async (email) => {
-  if (!email.includes("@")) {
-    const error = new Error("PLEASE ADD @ IN YOUR EMAIL!!");
+  const emailVal = new RegExp("^[a-z0-9]+@[a-zA-Z]+.+[a-zA-Z]{2,3}$");
+  if (!emailVal.test(email)) {
+    const error = new Error("PLEASE CHECK YOUR EMAIL!!");
     error.statusCode = 400;
     throw error;
   }
@@ -44,5 +33,4 @@ module.exports = {
   emailValidation,
   pwValidation,
   phoneNumValidation,
-  accountExistanceCheck,
 };

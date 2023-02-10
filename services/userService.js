@@ -1,6 +1,7 @@
 const userDao = require("../models/userDao");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+
 const {
   emailValidation,
   pwValidation,
@@ -17,6 +18,15 @@ const createUser = async (
   birthdate,
   gender
 ) => {
+  const accountExistanceCheck = async (account) => {
+    const [accountExistanceCheck] = await userDao.login(account);
+
+    if (accountExistanceCheck) {
+      const error = new Error("THIS ID EXISTS ALREADY!!");
+      error.statusCode = 400;
+      throw error;
+    }
+  };
   await accountExistanceCheck(account);
   await emailValidation(email);
   await pwValidation(password);
@@ -50,7 +60,7 @@ const login = async (account, password) => {
     throw error;
   }
 
-  const payLoad = { userAccount: userInfo.identification };
+  const payLoad = { id: userInfo.id };
   const secretKey = process.env.SECRET_KEY;
 
   return jwt.sign(payLoad, secretKey);
@@ -59,4 +69,5 @@ const login = async (account, password) => {
 module.exports = {
   createUser,
   login,
+  accountExistanceCheck,
 };

@@ -35,12 +35,12 @@ const login = async (account) => {
   try {
     return await teaDataSource.query(
       `SELECT 
-      id,
-      identification,
-      password
-    FROM users
-    WHERE identification = ?
-    `,
+        id,
+        identification,
+        password
+      FROM users
+      WHERE identification = ?
+      `,
       [account]
     );
   } catch (err) {
