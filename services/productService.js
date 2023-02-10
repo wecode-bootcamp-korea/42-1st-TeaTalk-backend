@@ -1,6 +1,6 @@
 const productDao = require("../models/productDao.js");
 
-const allProducts = async (page, pageSize, category, sub, type) => {
+const allProducts = async (page, pageSize, category, sub, type, sort) => {
   let start = 0;
   if (page <= 0) {
     page = 1;
@@ -18,7 +18,8 @@ const allProducts = async (page, pageSize, category, sub, type) => {
     pageSize,
     category,
     sub,
-    type
+    type,
+    sort
   );
   return getProduct;
 };

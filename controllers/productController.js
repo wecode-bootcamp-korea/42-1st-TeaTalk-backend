@@ -7,8 +7,8 @@ const allProducts = async (req, res) => {
   const category = pageInfo.category;
   const sub = pageInfo.sub;
   const ty = pageInfo.type;
-  const type = ty ? ty.split(",") : [];
-  console.log(type);
+  const type = ty ? ty.split(",") : "";
+  const sort = pageInfo.sort;
   try {
     if (!page || !pageSize) {
       return res.status(404).json({ message: "Page_ERROR" });
@@ -18,7 +18,8 @@ const allProducts = async (req, res) => {
       pageSize,
       category,
       sub,
-      type
+      type,
+      sort
     );
 
     res.status(200).json({ data: lists });
