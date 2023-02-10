@@ -7,6 +7,7 @@ ALTER TABLE products
 
 -- migrate:down
 ALTER TABLE products
+  DROP CONSTRAINT products_product_type_id_fkey,
   DROP COLUMN product_type_id,
   DROP COLUMN created_at,
   DROP COLUMN updated_at;
