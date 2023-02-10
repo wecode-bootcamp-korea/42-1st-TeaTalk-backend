@@ -1,5 +1,6 @@
 const emailValidation = async (email) => {
-  const emailVal = new RegExp("^[a-z0-9]+@[a-zA-Z]+.+[a-zA-Z]{2,3}$");
+  const emailVal = new RegExp("^[a-z0-9]+@[a-zA-Z]+.[a-zA-Z]{2,3}$");
+  console.log(emailVal.test(email));
   if (!emailVal.test(email)) {
     const error = new Error("PLEASE CHECK YOUR EMAIL!!");
     error.statusCode = 400;
