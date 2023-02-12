@@ -31,13 +31,15 @@ const createUser = async (
   }
 };
 
-const login = async (account) => {
+const getUserByAccount = async (account) => {
   try {
     return await teaDataSource.query(
       `SELECT 
         id,
         identification,
-        password
+        password,
+        email,
+        name
       FROM users
       WHERE identification = ?
       `,
@@ -52,5 +54,5 @@ const login = async (account) => {
 
 module.exports = {
   createUser,
-  login,
+  getUserByAccount,
 };

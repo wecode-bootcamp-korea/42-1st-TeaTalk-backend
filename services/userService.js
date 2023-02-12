@@ -19,9 +19,9 @@ const createUser = async (
   gender
 ) => {
   const accountExistanceCheck = async (account) => {
-    const [accountExistanceCheck] = await userDao.login(account);
+    const [userInfo] = await userDao.getUserByAccount(account);
 
-    if (accountExistanceCheck) {
+    if (userInfo) {
       const error = new Error("THIS ID EXISTS ALREADY!!");
       error.statusCode = 400;
       throw error;
