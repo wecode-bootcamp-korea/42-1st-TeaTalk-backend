@@ -23,6 +23,28 @@ const productDetail = async (productId) => {
   );
 };
 
+const productCartIn = async (userId, productId, quantity) => {
+  return await teaDataSource.query(
+    `INSERT INTO 
+      carts (
+      user_id,
+      product_id,
+      quantity)
+      VALUE (
+        ?,
+        ?,
+        ?
+      ) ON DUPLICATE KEY UPDATE
+      quantity = 
+      (SELECT quantity FROM 
+        (SELECT c.quantity from carts c 
+          WHERE user_id=? and  product_id=?)
+          cart) + ?;`,
+    [userId, productId, quantity, userId, productId, quantity]
+  );
+};
+
 module.exports = {
   productDetail,
+  productCartIn,
 };
