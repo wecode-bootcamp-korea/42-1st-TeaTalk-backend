@@ -35,12 +35,8 @@ const productCartIn = async (userId, productId, quantity) => {
         ?,
         ?
       ) ON DUPLICATE KEY UPDATE
-      quantity = 
-      (SELECT quantity FROM 
-        (SELECT c.quantity from carts c 
-          WHERE user_id=? and  product_id=?)
-          cart) + ?;`,
-    [userId, productId, quantity, userId, productId, quantity]
+      quantity = quantity + ?;`,
+    [userId, productId, quantity, quantity]
   );
 };
 
