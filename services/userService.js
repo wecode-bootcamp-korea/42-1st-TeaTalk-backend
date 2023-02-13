@@ -6,8 +6,7 @@ const {
   emailValidation,
   pwValidation,
   phoneNumValidation,
-  accountExistanceCheck,
-} = require("../utils/user_validation");
+} = require("../utils/userValidation");
 
 const createUser = async (
   account,
@@ -18,16 +17,15 @@ const createUser = async (
   birthdate,
   gender
 ) => {
-  const accountExistanceCheck = async (account) => {
-    const [userInfo] = await userDao.getUserByAccount(account);
+  //account 중복 체크
+  const [userInfo] = await userDao.getUserByAccount(account);
 
-    if (userInfo) {
-      const error = new Error("THIS ID EXISTS ALREADY!!");
-      error.statusCode = 400;
-      throw error;
-    }
-  };
-  await accountExistanceCheck(account);
+  if (userInfo) {
+    const error = new Error("THIS ID EXISTS ALREADY!!");
+    error.statusCode = 400;
+    throw error;
+  }
+
   await emailValidation(email);
   await pwValidation(password);
   await phoneNumValidation(phoneNum);
@@ -69,5 +67,4 @@ const login = async (account, password) => {
 module.exports = {
   createUser,
   login,
-  accountExistanceCheck,
 };

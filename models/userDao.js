@@ -18,7 +18,8 @@ const createUser = async (
         name,
         phone_number,
         birthdate,
-        gender)
+        gender
+        )
       VALUE(?,?,?,?,?,?,?)
       `,
       [account, hashedPw, email, name, phoneNum, birthdate, gender]
