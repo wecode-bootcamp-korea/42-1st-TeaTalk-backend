@@ -5,16 +5,6 @@ const showDetail = async (productId) => {
   return productDetail;
 };
 
-const cartIn = async (userId, productId, quantity) => {
-  const productCartIn = await productDao.productCartIn(
-    userId,
-    productId,
-    quantity
-  );
-  return productCartIn;
-};
-
 module.exports = {
   showDetail,
-  cartIn,
 };
