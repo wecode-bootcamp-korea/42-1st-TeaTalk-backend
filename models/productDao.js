@@ -1,27 +1,28 @@
 const { teaDataSource } = require("./datasource.js");
 
-const getProduct = async (start, pageSize, category, sub, type, sort) => {
-  let whereCondition = category ? `WHERE` : type ? `WHERE` : "";
-  let andCondition = category && type ? `AND` : sub && type ? `AND` : "";
+const getProducts = async (start, pageSize, category, sub, typeArr, sort) => {
+  let whereCondition = category ? `WHERE` : typeArr ? `WHERE` : "";
+  let andCondition = category && typeArr ? `AND` : sub && typeArr ? `AND` : "";
   const categoryCondition = category ? `c.name='${category}'` : "";
   const subCondition = sub ? `AND s.name='${sub}'` : "";
-  const typeCondition = type[0]
-    ? type[1]
-      ? type[2]
-        ? type[3]
-          ? `(t.type='${type[0]}' OR t.type='${type[1]}' OR t.type='${type[2]}',t.type='${type[3]}')`
-          : `(t.type='${type[0]}' OR t.type='${type[1]}' OR t.type='${type[2]}')`
-        : `(t.type='${type[0]}' OR t.type='${type[1]}')`
-      : `(t.type='${type[0]}')`
+  const typeCondition = typeArr
+    ? `INNER JOIN product_types t ON p.product_type_id = t.id`
     : "";
-  let sortCondition = "";
-  if (sort === "price_asc") {
-    sortCondition = `ORDER BY p.discount_price ASC`;
-  } else if (sort === "price_desc") {
-    sortCondition = `ORDER BY p.discount_price DESC`;
-  } else if (sort === "new_arrival") {
-    sortCondition = `ORDER BY p.created_at DESC`;
-  }
+  const typeArrCondition = typeArr[0]
+    ? typeArr[1]
+      ? typeArr[2]
+        ? typeArr[3]
+          ? `(t.type='${typeArr[0]}' OR t.type='${typeArr[1]}' OR t.type='${typeArr[2]}',t.type='${typeArr[3]}')`
+          : `(t.type='${typeArr[0]}' OR t.type='${typeArr[1]}' OR t.type='${typeArr[2]}')`
+        : `(t.type='${typeArr[0]}' OR t.type='${typeArr[1]}')`
+      : `(t.type='${typeArr[0]}')`
+    : "";
+  const sortSet = {
+    new_arrival: `ORDER BY p.created_at DESC`,
+    price_desc: `ORDER BY p.discount_price DESC`,
+    price_asc: `ORDER BY p.discount_price ASC`,
+  };
+  const sortCondition = sortSet[sort];
   return await teaDataSource.query(
     `SELECT
         p.name,
@@ -33,29 +34,28 @@ const getProduct = async (start, pageSize, category, sub, type, sort) => {
         ON p.subcategory_id = s.id
         INNER JOIN categories c
         ON s.category_id = c.id
-        INNER JOIN product_types t
-        ON p.product_types_id = t.id
+        ${typeCondition}
         ${whereCondition}
         ${categoryCondition}
         ${subCondition}
         ${andCondition}
-        ${typeCondition}
+        ${typeArrCondition}
         ${sortCondition}
         LIMIT ?,?`,
     [start, pageSize]
   );
 };
 
-const moreThanProducts = async () => {
+const getProductCounts = async () => {
   return await teaDataSource.query(
     `SELECT
-      count(*)
+      count(id) as counts
     FROM
     products`
   );
 };
 
 module.exports = {
-  getProduct,
-  moreThanProducts,
+  getProducts,
+  getProductCounts,
 };

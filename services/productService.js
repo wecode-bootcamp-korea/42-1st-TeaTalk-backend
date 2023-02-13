@@ -1,29 +1,30 @@
 const productDao = require("../models/productDao.js");
 
-const allProducts = async (page, pageSize, category, sub, type, sort) => {
+const getProducts = async (pageNum, pageSize, category, sub, type, sort) => {
   let start = 0;
-  if (page <= 0) {
-    page = 1;
+  if (pageNum <= 0) {
+    pageNum = 1;
   } else {
-    start = (page - 1) * pageSize;
+    start = (pageNum - 1) * pageSize;
   }
-  const moreThanProducts = await productDao.moreThanProducts();
-  if (page > Math.ceil(moreThanProducts[0]["count(*)"] / pageSize)) {
+  const typeArr = type ? type.split(",") : "";
+  const productCounts = await productDao.getProductCounts();
+  if (pageNum > Math.ceil(productCounts[0].counts / pageSize)) {
     const err = new Error("제품이 없습니다.");
     err.statusCode = 400;
     throw err;
   }
-  const getProduct = await productDao.getProduct(
+  const result = await productDao.getProducts(
     start,
     pageSize,
     category,
     sub,
-    type,
+    typeArr,
     sort
   );
-  return getProduct;
+  return result;
 };
 
 module.exports = {
-  allProducts,
+  getProducts,
 };

@@ -1,20 +1,15 @@
 const productService = require("../services/productService");
 
-const allProducts = async (req, res) => {
-  const pageInfo = req.query;
-  const page = parseInt(pageInfo.page);
-  const pageSize = parseInt(pageInfo.pageSize);
-  const category = pageInfo.category;
-  const sub = pageInfo.sub;
-  const ty = pageInfo.type;
-  const type = ty ? ty.split(",") : "";
-  const sort = pageInfo.sort;
+const getProducts = async (req, res) => {
+  const { category, sub, type, sort, page } = req.query;
+  const pageNum = parseInt(page);
+  const pageSize = 12;
   try {
-    if (!page || !pageSize) {
-      return res.status(404).json({ message: "Page_ERROR" });
+    if (!page) {
+      pageNum = 1;
     }
-    const lists = await productService.allProducts(
-      page,
+    const lists = await productService.getProducts(
+      pageNum,
       pageSize,
       category,
       sub,
@@ -29,5 +24,5 @@ const allProducts = async (req, res) => {
 };
 
 module.exports = {
-  allProducts,
+  getProducts,
 };
