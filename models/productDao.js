@@ -1,15 +1,22 @@
 const { teaDataSource } = require("./datasource.js");
 
 const getProducts = async (start, pageSize, category, sub, typeArr, sort) => {
-  let whereCondition = category ? `WHERE` : typeArr ? `WHERE` : "";
-  let subAndCondition = category ? `AND` : "";
-  let andCondition = category && typeArr ? `AND` : sub && typeArr ? `AND` : "";
-  const categoryCondition = category ? `c.name='${category}'` : "";
-  const subCondition = sub ? `s.name='${sub}'` : "";
-
   const typeCondition = typeArr
     ? `INNER JOIN product_types t ON p.product_type_id = t.id`
     : "";
+  let whereCondition = "";
+  if (category || typeArr) {
+    whereCondition = "WHERE";
+  }
+
+  const categoryCondition = category ? `c.name='${category}'` : "";
+  const subCondition = sub ? `AND s.name='${sub}'` : "";
+
+  let andCondition = "";
+  if ((category && typeArr) || (sub && typeArr)) {
+    andCondition = "AND";
+  }
+
   let typeArrCondition = "";
   for (let i = 0; i < typeArr.length; i++) {
     if (i === 0) {
@@ -21,6 +28,7 @@ const getProducts = async (start, pageSize, category, sub, typeArr, sort) => {
       typeArrCondition = typeArrCondition + `)`;
     }
   }
+
   let sortCondition = "";
   switch (sort) {
     case "new_arrival":
@@ -36,13 +44,6 @@ const getProducts = async (start, pageSize, category, sub, typeArr, sort) => {
       sortCondition = "";
       break;
   }
-  console.log(typeCondition);
-  console.log(whereCondition);
-  console.log(categoryCondition);
-  console.log(subCondition);
-  console.log("and", andCondition);
-  console.log("type:", typeArrCondition);
-  console.log("이거냐:", sortCondition);
   return await teaDataSource.query(
     `SELECT
         p.name,
@@ -57,7 +58,6 @@ const getProducts = async (start, pageSize, category, sub, typeArr, sort) => {
         ${typeCondition}
         ${whereCondition}
         ${categoryCondition}
-        ${subAndCondition}
         ${subCondition}
         ${andCondition}
         ${typeArrCondition}
