@@ -12,11 +12,12 @@ const teaDataSource = new DataSource({
 teaDataSource
   .initialize()
   .then(() => {
-    console.log("Data server has been initiallized!");
+    console.log("Data server has been initialized!!");
   })
+
   .catch((err) => {
-    console.log(err);
-    console.log("Failed to connect database");
+    console.log("Failed to connect database", err);
+    teaDataSource.destroy();
   });
 
 module.exports = {

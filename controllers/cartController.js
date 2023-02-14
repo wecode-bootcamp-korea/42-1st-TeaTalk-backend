@@ -2,7 +2,8 @@ const cartService = require("../services/cartService");
 
 const addProductToCart = async (req, res) => {
   try {
-    const { userId, productId, quantity } = req.body;
+    const userId = req.user;
+    const { productId, quantity } = req.body;
     if (!userId || !productId || !quantity) {
       const err = new Error("Invalid user's Id or quantity");
       err.statusCode = 400;
@@ -16,7 +17,7 @@ const addProductToCart = async (req, res) => {
 };
 
 const showCartOfUser = async (req, res) => {
-  const { userId } = req.params;
+  const userId = req.user;
   try {
     if (!userId) {
       const err = new Error("Please type correct userId");
@@ -36,7 +37,8 @@ const showCartOfUser = async (req, res) => {
 
 const deleteCartById = async (req, res) => {
   try {
-    const { userId, cartId } = req.body;
+    const userId = req.user;
+    const { cartId } = req.body;
     if (cartId.length === 0) {
       const err = new Error("Didn't select cartId!");
       statusCode = 400;
