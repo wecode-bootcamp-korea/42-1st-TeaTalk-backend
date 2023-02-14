@@ -2,7 +2,7 @@ const productService = require("../services/productService");
 
 const getProducts = async (req, res) => {
   const { category, sub, type, sort, page } = req.query;
-  const pageNum = parseInt(page);
+  let pageNum = parseInt(page);
   const pageSize = 12;
   try {
     if (!page) {
