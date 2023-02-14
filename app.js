@@ -3,8 +3,8 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
-const routes = require("./routes");
 
+const routes = require("./routes");
 const app = express();
 
 app.use(express.json());
@@ -18,7 +18,6 @@ app.get("/ping", (req, res) => {
 });
 
 const PORT = process.env.PORT;
-
 const start = async () => {
   app.listen(PORT, () => {
     console.log(`server is listening on ${PORT}`);

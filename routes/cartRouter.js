@@ -3,9 +3,9 @@ const cartController = require("../controllers/cartController.js");
 
 const router = express.Router();
 
-router.post("/", cartController.cartIn);
-router.get("/:userId", cartController.showCart);
-router.delete("/", cartController.deleteCart);
+router.post("/", cartController.addProductToCart);
+router.get("/:userId", cartController.showCartOfUser);
+router.delete("/", cartController.deleteCartById);
 
 module.exports = {
   router,

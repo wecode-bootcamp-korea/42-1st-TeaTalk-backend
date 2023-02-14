@@ -1,6 +1,6 @@
 const cartService = require("../services/cartService");
 
-const cartIn = async (req, res) => {
+const addProductToCart = async (req, res) => {
   try {
     const { userId, productId, quantity } = req.body;
     if (!userId || !productId || !quantity) {
@@ -8,14 +8,14 @@ const cartIn = async (req, res) => {
       err.statusCode = 400;
       throw err;
     }
-    const cart = await cartService.cartIn(userId, productId, quantity);
+    await cartService.addProductToCart(userId, productId, quantity);
     res.status(200).json({ message: "상품이 장바구니에 추가되었습니다." });
   } catch (err) {
     return res.status(err.status || 500).json({ message: err.message });
   }
 };
 
-const showCart = async (req, res) => {
+const showCartOfUser = async (req, res) => {
   const { userId } = req.params;
   try {
     if (!userId) {
@@ -23,7 +23,7 @@ const showCart = async (req, res) => {
       err.statusCode = 400;
       throw err;
     }
-    const userCart = await cartService.showCart(userId);
+    const userCart = await cartService.showCartOfUser(userId);
     if (userCart === []) {
       res.status(200).json({ message: "상품이 없습니다!" });
     } else {
@@ -34,20 +34,28 @@ const showCart = async (req, res) => {
   }
 };
 
-const deleteCart = async (req, res) => {
-  const { userId, cartId } = req.body;
-  const cartIdArr = cartId ? cartId.split(",") : [];
-  const deleteProduct = await cartService.deleteCart(userId, cartIdArr);
-  const userCart = await cartService.showCart(userId);
-  if (userCart.length === 0) {
-    res.status(200).json({ message: "상품이 없습니다!" });
-  } else {
-    res.status(200).json({ cart: userCart });
+const deleteCartById = async (req, res) => {
+  try {
+    const { userId, cartId } = req.body;
+    if (cartId.length === 0) {
+      const err = new Error("Didn't select cartId!");
+      statusCode = 400;
+      throw err;
+    }
+    await cartService.deleteCartById(userId, cartId);
+    const userCart = await cartService.showCartOfUser(userId);
+    if (userCart.length === 0) {
+      res.status(200).json({ message: "상품이 없습니다!" });
+    } else {
+      res.status(200).json({ cart: userCart });
+    }
+  } catch (err) {
+    return res.status(err.status || 500).json({ message: err.message });
   }
 };
 
 module.exports = {
-  cartIn,
-  showCart,
-  deleteCart,
+  addProductToCart,
+  showCartOfUser,
+  deleteCartById,
 };

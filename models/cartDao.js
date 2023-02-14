@@ -1,58 +1,53 @@
 const { teaDataSource } = require("./datasource.js");
 
-const cartIn = async (userId, productId, quantity) => {
+const addProductToCart = async (userId, productId, quantity) => {
   return await teaDataSource.query(
     `INSERT INTO 
       carts (
       user_id,
       product_id,
-      quantity)
+      quantity
+      )
       VALUE (
         ?,
         ?,
         ?
-      ) ON DUPLICATE KEY UPDATE
-      quantity = quantity + ?;`,
+      ) ON DUPLICATE KEY UPDATE quantity = quantity + ?;`,
     [userId, productId, quantity, quantity]
   );
 };
 
-const showCart = async (userId) => {
+const showCartOfUser = async (userId) => {
   return await teaDataSource.query(
     `SELECT
-      p.name,
-      c.quantity,
-      p.discount_price,
-      p.image_url
+        p.name,
+        c.quantity,
+        p.discount_price,
+        p.image_url
       FROM carts c
-      INNER JOIN users u
-      ON c.user_id = u.id
-      INNER JOIN products p
-      ON c.product_id = p.id
+      INNER JOIN users u ON c.user_id = u.id
+      INNER JOIN products p ON c.product_id = p.id
       WHERE u.id = ?;`,
     [userId]
   );
 };
 
-const deleteCart = async (userId, cartIdArr) => {
-  console.log(cartIdArr);
-  let cartId = "";
-  for (let i = 0; i < cartIdArr.length; i++) {
-    cartId = cartId + ` OR c.id = ${cartIdArr[i]}`;
-  }
-  console.log(cartId);
+const deleteCartById = async (userId, cartId) => {
+  // if (cartIdArr.length === 0) {
+  //   cartIdArr.push(0);
+  // }
   return await teaDataSource.query(
     `DELETE FROM
       carts c
       WHERE
       c.user_id = ?
-      AND (c.id = 0 ${cartId});`,
-    [userId]
+      AND c.id IN (?);`,
+    [userId, cartId]
   );
 };
 
 module.exports = {
-  cartIn,
-  showCart,
-  deleteCart,
+  addProductToCart,
+  showCartOfUser,
+  deleteCartById,
 };
