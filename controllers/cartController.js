@@ -44,11 +44,7 @@ const deleteCartById = async (req, res) => {
     }
     await cartService.deleteCartById(userId, cartId);
     const userCart = await cartService.showCartOfUser(userId);
-    if (userCart.length === 0) {
-      res.status(200).json({ message: "상품이 없습니다!" });
-    } else {
-      res.status(200).json({ cart: userCart });
-    }
+    res.status(200).json({ cart: userCart });
   } catch (err) {
     return res.status(err.status || 500).json({ message: err.message });
   }
