@@ -6,8 +6,8 @@ const morgan = require("morgan");
 const dotenv = require("dotenv");
 
 const routes = require("./routes");
-
 const app = express();
+
 app.use(express.json());
 app.use(cors());
 app.use(morgan("tiny"));
