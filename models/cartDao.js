@@ -17,12 +17,12 @@ const addProductToCart = async (userId, productId, quantity) => {
   );
 };
 
-const showCartOfUser = async (userId) => {
+const getCartsByUserId = async (userId) => {
   return await teaDataSource.query(
     `SELECT
         p.name,
         c.quantity,
-        p.discount_price,
+        p.price,
         p.image_url
       FROM carts c
       INNER JOIN users u ON c.user_id = u.id
@@ -45,6 +45,6 @@ const deleteCartById = async (userId, cartId) => {
 
 module.exports = {
   addProductToCart,
-  showCartOfUser,
+  getCartsByUserId,
   deleteCartById,
 };

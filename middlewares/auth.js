@@ -8,18 +8,8 @@ const loginRequired = async (req, res, next) => {
       error.statusCode = 400;
       throw error;
     }
-    const decode = jwt.verify(
-      token,
-      process.env.SECRET_KEY,
-      function (err, decoded) {
-        if (!decoded) {
-          const error = new Error("YOUR TOKEN IS INVALID!!");
-          error.statusCode = 401;
-          throw error;
-        }
-        return decoded;
-      }
-    );
+    const SECRET_KEY = process.env.SECRET_KEY;
+    const decode = jwt.verify(token, SECRET_KEY);
 
     req.user = decode.id;
     next();

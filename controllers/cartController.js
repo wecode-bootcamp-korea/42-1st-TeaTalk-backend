@@ -4,8 +4,8 @@ const addProductToCart = async (req, res) => {
   try {
     const userId = req.user;
     const { productId, quantity } = req.body;
-    if (!userId || !productId || !quantity) {
-      const err = new Error("Invalid user's Id or quantity");
+    if (!productId || !quantity) {
+      const err = new Error("Invalid quantity");
       err.statusCode = 400;
       throw err;
     }
@@ -16,15 +16,10 @@ const addProductToCart = async (req, res) => {
   }
 };
 
-const showCartOfUser = async (req, res) => {
-  const userId = req.user;
+const getCartsByUserId = async (req, res) => {
   try {
-    if (!userId) {
-      const err = new Error("Please type correct userId");
-      err.statusCode = 400;
-      throw err;
-    }
-    const userCart = await cartService.showCartOfUser(userId);
+    const userId = req.user;
+    const userCart = await cartService.getCartsByUserId(userId);
     res.status(200).json({ cart: userCart });
   } catch (err) {
     return res.status(err.status || 500).json({ message: err.message });
@@ -41,7 +36,7 @@ const deleteCartById = async (req, res) => {
       throw err;
     }
     await cartService.deleteCartById(userId, cartId);
-    const userCart = await cartService.showCartOfUser(userId);
+    const userCart = await cartService.getCartsByUserId(userId);
     res.status(200).json({ cart: userCart });
   } catch (err) {
     return res.status(err.status || 500).json({ message: err.message });
@@ -50,6 +45,6 @@ const deleteCartById = async (req, res) => {
 
 module.exports = {
   addProductToCart,
-  showCartOfUser,
+  getCartsByUserId,
   deleteCartById,
 };
