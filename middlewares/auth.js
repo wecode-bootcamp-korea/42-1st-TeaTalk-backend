@@ -12,7 +12,7 @@ const loginRequired = async (req, res, next) => {
     const decode = jwt.verify(token, SECRET_KEY);
 
     req.user = decode.id;
-    next();
+    return next();
   } catch (err) {
     res.status(err.statusCode).json(err.message);
   }

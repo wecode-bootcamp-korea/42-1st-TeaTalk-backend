@@ -5,7 +5,7 @@ const addProductToCart = async (req, res) => {
     const userId = req.user;
     const { productId, quantity } = req.body;
     if (!productId || !quantity) {
-      const err = new Error("Invalid quantity");
+      const err = new Error("Invalid productId or quantity!");
       err.statusCode = 400;
       throw err;
     }
