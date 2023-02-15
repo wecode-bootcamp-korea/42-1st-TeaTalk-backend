@@ -1,6 +1,6 @@
 const cartService = require("../services/cartService");
 
-const addProductToCart = async (req, res) => {
+const createCart = async (req, res) => {
   try {
     const userId = req.user;
     const { productId, quantity } = req.body;
@@ -9,7 +9,7 @@ const addProductToCart = async (req, res) => {
       err.statusCode = 400;
       throw err;
     }
-    await cartService.addProductToCart(userId, productId, quantity);
+    await cartService.createCart(userId, productId, quantity);
     res.status(200).json({ message: "상품이 장바구니에 추가되었습니다." });
   } catch (err) {
     return res.status(err.status || 500).json({ message: err.message });
@@ -44,7 +44,7 @@ const deleteCartById = async (req, res) => {
 };
 
 module.exports = {
-  addProductToCart,
+  createCart,
   getCartsByUserId,
   deleteCartById,
 };

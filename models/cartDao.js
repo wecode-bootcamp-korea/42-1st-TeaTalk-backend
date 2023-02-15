@@ -1,6 +1,6 @@
 const { teaDataSource } = require("./datasource.js");
 
-const addProductToCart = async (userId, productId, quantity) => {
+const createCart = async (userId, productId, quantity) => {
   return await teaDataSource.query(
     `INSERT INTO 
       carts (
@@ -44,7 +44,7 @@ const deleteCartById = async (userId, cartId) => {
 };
 
 module.exports = {
-  addProductToCart,
+  createCart,
   getCartsByUserId,
   deleteCartById,
 };
