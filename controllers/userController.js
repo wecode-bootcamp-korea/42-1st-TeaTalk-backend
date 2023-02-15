@@ -4,15 +4,7 @@ const createUser = async (req, res) => {
   try {
     const { account, password, email, name, phoneNum, birthdate, gender } =
       req.body;
-    if (
-      !account ||
-      !password ||
-      !email ||
-      !name ||
-      !phoneNum ||
-      !birthdate ||
-      !gender
-    ) {
+    if (!account || !password || !email || !name || !phoneNum || !birthdate) {
       const error = Error("PLEASE FILL IN ALL INFORMATION BLANKS!!");
       error.statusCode = 400;
       throw error;

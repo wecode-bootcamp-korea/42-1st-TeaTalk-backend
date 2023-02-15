@@ -32,19 +32,54 @@ const createUser = async (
   }
 };
 
-const getUserByAccount = async (account) => {
+const getUserSimpleInfoByAccount = async (account) => {
   try {
+    //return 없어서 계속 error났었음...
     return await teaDataSource.query(
-      `SELECT 
+      `SELECT
         id,
         identification,
         password,
         email,
-        name
+        name,
+        phone_number
       FROM users
-      WHERE identification = ?
-      `,
+      WHERE identification = ?`,
       [account]
+    );
+  } catch (err) {
+    const error = new Error("INVALID USER!!");
+    error.statusCode = 500;
+    throw error;
+  }
+};
+
+//주소지를 포함한 유저의 모든 정보
+const getUserByAccount = async (userId) => {
+  try {
+    return await teaDataSource.query(
+      `SELECT
+        users.id,
+        users.name,
+        users.email,
+        users.phone_number,
+        address.list as addressList
+      FROM users
+        INNER JOIN (
+          SELECT
+            user_id,
+            JSON_ARRAYAGG(
+              JSON_OBJECT(
+                'delivery_id', deliveries.id,
+                'receiver_name', deliveries.receiver_name,
+                'receiver_phone_nmuber', deliveries.receiver_phone_number,
+                'receiver_zipcode', deliveries.receiver_zipcode,
+                'receiver_address', deliveries.receiver_address)
+              ) as list
+            FROM deliveries GROUP BY user_id) address
+          ON users.id = address.user_id
+          WHERE users.id = ?`,
+      [userId]
     );
   } catch (err) {
     const error = new Error("INVALID USER!!");
@@ -55,5 +90,6 @@ const getUserByAccount = async (account) => {
 
 module.exports = {
   createUser,
+  getUserSimpleInfoByAccount,
   getUserByAccount,
 };
