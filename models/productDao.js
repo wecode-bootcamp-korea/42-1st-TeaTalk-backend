@@ -3,6 +3,7 @@ const { teaDataSource } = require("./datasource.js");
 const getProductById = async (productId) => {
   return await teaDataSource.query(
     `SELECT
+      p.id AS product_id,
       p.name AS product_name,
       p.description AS description,
       p.price AS price,
