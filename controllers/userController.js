@@ -44,7 +44,7 @@ const login = async (req, res) => {
     const token = await userService.login(account, password);
     return res.status(200).json({ accessToken: token });
   } catch (err) {
-    return res.status(err.statusCode || 500).json(err.message);
+    return res.status(err.statusCode).json(err.message);
   }
 };
 

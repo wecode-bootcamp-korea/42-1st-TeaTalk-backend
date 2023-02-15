@@ -3,15 +3,11 @@ const jwt = require("jsonwebtoken");
 const loginRequired = async (req, res, next) => {
   try {
     const token = req.headers.authorization;
-
-    // token이 없을 때,
     if (!token) {
       const error = new Error("YOU NEEDS TOKEN!!");
       error.statusCode = 400;
       throw error;
     }
-
-    // invalid한 token일 때,
     const decode = jwt.verify(
       token,
       process.env.SECRET_KEY,
