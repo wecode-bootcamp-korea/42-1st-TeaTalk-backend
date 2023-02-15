@@ -1,9 +1,9 @@
 const productService = require("../services/productService");
 
-const getProductById = async (req, res) => {
+const getProductList = async (req, res) => {
   const { categoryId, subCategoryId, type, sort, offset = 1 } = req.query;
   try {
-    const lists = await productService.getProductById(
+    const lists = await productService.getProductList(
       +offset,
       categoryId,
       subCategoryId,
@@ -16,6 +16,22 @@ const getProductById = async (req, res) => {
   }
 };
 
+const getProductById = async (req, res) => {
+  try {
+    const { productId } = req.params;
+    if (!productId) {
+      const err = new Error("Invalid product's Number");
+      err.statusCode = 400;
+      throw err;
+    }
+    const detail = await productService.getProductById(productId);
+    res.status(200).json({ data: detail });
+  } catch (err) {
+    return res.status(err.status || 500).json({ message: err.message });
+  }
+};
+
 module.exports = {
+  getProductList,
   getProductById,
 };
