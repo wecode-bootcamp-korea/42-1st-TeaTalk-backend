@@ -1,7 +1,7 @@
 const { teaDataSource } = require("./datasource.js");
 
 const getProductList = async (
-  start,
+  start = 0,
   categoryId,
   subCategoryId,
   typeArr,
