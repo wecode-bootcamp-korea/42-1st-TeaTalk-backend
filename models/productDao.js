@@ -1,4 +1,4 @@
-const { teaDataSource } = require("./database.js");
+const { teaDataSource } = require("./datasource.js");
 
 const getProductById = async (productId) => {
   return await teaDataSource.query(
@@ -7,16 +7,18 @@ const getProductById = async (productId) => {
       p.description AS description,
       p.price AS price,
       p.discount_price AS discount_price,
-      p.image_url as title_image,
-      JSON_ARRAYAGG(i.image_url) as detail_image,
+      p.image_url AS title_image,
       s.name AS subcategory_name,
-      c.name AS category_name
-    FROM products p
-    INNER JOIN product_images i ON p.id = i.product_id
-    INNER JOIN subcategories s ON p.subcategory_id = s.id
-    INNER JOIN categories c ON s.category_id = c.id
-    WHERE p.id = ?
-    GROUP BY p.id;`,
+      c.name AS category_name,
+      pi.images
+    FROM products AS p
+    LEFT JOIN (
+      SELECT product_id, JSON_ARRAYAGG(JSON_OBJECT('id', id, 'url', image_url)) AS images 
+      FROM product_images GROUP BY product_id
+    ) AS pi ON pi.product_id = p.id
+    INNER JOIN subcategories AS s ON p.subcategory_id = s.id
+    INNER JOIN categories AS c ON s.category_id = c.id
+    WHERE p.id = ?;`,
     [productId]
   );
 };
