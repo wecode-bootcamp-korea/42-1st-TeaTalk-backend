@@ -1,6 +1,6 @@
 const { teaDataSource } = require("./datasource.js");
 
-const getProducts = async (start, pageSize, category, sub, typeArr, sort) => {
+const getProducts = async (start, limit, category, sub, typeArr, sort) => {
   const typeCondition = typeArr
     ? `INNER JOIN product_types t ON p.product_type_id = t.id`
     : "";
@@ -50,10 +50,10 @@ const getProducts = async (start, pageSize, category, sub, typeArr, sort) => {
         p.price,
         p.discount_price
         FROM
-        products p
-        INNER JOIN subcategories s
+        products AS p
+        INNER JOIN subcategories AS s
         ON p.subcategory_id = s.id
-        INNER JOIN categories c
+        INNER JOIN categories AS c
         ON s.category_id = c.id
         ${typeCondition}
         ${whereCondition}
@@ -63,20 +63,10 @@ const getProducts = async (start, pageSize, category, sub, typeArr, sort) => {
         ${typeArrCondition}
         ${sortCondition}
         LIMIT ?,?`,
-    [start, pageSize]
-  );
-};
-
-const getProductCounts = async () => {
-  return await teaDataSource.query(
-    `SELECT
-      count(id) as counts
-    FROM
-    products`
+    [start, limit]
   );
 };
 
 module.exports = {
   getProducts,
-  getProductCounts,
 };

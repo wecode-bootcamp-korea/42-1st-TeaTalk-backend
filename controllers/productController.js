@@ -1,22 +1,17 @@
 const productService = require("../services/productService");
 
 const getProducts = async (req, res) => {
-  const { category, sub, type, sort, page } = req.query;
-  let pageNum = parseInt(page);
-  const pageSize = 12;
+  const { category, sub, type, sort, offset = 1 } = req.query;
+  const limit = 12;
   try {
-    if (!page) {
-      pageNum = 1;
-    }
     const lists = await productService.getProducts(
-      pageNum,
-      pageSize,
+      +offset,
+      limit,
       category,
       sub,
       type,
       sort
     );
-
     res.status(200).json({ data: lists });
   } catch (err) {
     return res.status(err.status || 500).json({ message: err.message });
