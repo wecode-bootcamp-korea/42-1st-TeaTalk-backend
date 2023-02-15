@@ -34,7 +34,6 @@ const createUser = async (
 
 const getUserByAccount = async (account) => {
   try {
-    console.log("메롱-------------------------");
     return await teaDataSource.query(
       `SELECT 
         id,

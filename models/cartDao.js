@@ -33,9 +33,6 @@ const showCartOfUser = async (userId) => {
 };
 
 const deleteCartById = async (userId, cartId) => {
-  // if (cartIdArr.length === 0) {
-  //   cartIdArr.push(0);
-  // }
   return await teaDataSource.query(
     `DELETE FROM
       carts c
