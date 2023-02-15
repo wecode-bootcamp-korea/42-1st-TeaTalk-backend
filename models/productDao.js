@@ -56,7 +56,8 @@ const getProducts = async (start, limit, category, sub, typeArr, sort) => {
         p.id AS product_id,
         p.name AS product_name,
         p.price AS product_price,
-        p.discount_price AS product_discount_price, 
+        p.discount_price AS product_discount_price,
+        p.image_url AS product_main_image, 
         pi.images
       FROM products AS p
       LEFT JOIN(
