@@ -13,7 +13,14 @@ const getProductById = async (productId) => {
       pi.images
     FROM products AS p
     LEFT JOIN (
-      SELECT product_id, JSON_ARRAYAGG(JSON_OBJECT('id', id, 'url', image_url)) AS images 
+      SELECT 
+        product_id, 
+        JSON_ARRAYAGG(
+          JSON_OBJECT(
+            'id', id, 
+            'url', image_url
+          )
+        ) AS images 
       FROM product_images GROUP BY product_id
     ) AS pi ON pi.product_id = p.id
     INNER JOIN subcategories AS s ON p.subcategory_id = s.id
