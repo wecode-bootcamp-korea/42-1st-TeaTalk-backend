@@ -1,14 +1,12 @@
 const productService = require("../services/productService");
 
-const getProductByID = async (req, res) => {
-  const { category, sub, type, sort, offset = 1 } = req.query;
-  const limit = 12;
+const getProductById = async (req, res) => {
+  const { categoryId, subCategoryId, type, sort, offset = 1 } = req.query;
   try {
-    const lists = await productService.getProductByID(
+    const lists = await productService.getProductById(
       +offset,
-      limit,
-      category,
-      sub,
+      categoryId,
+      subCategoryId,
       type,
       sort
     );
@@ -19,5 +17,5 @@ const getProductByID = async (req, res) => {
 };
 
 module.exports = {
-  getProductByID,
+  getProductById,
 };

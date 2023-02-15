@@ -1,19 +1,26 @@
 const { teaDataSource } = require("./datasource.js");
 
-const getProductByID = async (start, limit, category, sub, typeArr, sort) => {
+const getProductById = async (
+  start,
+  categoryId,
+  subCategoryId,
+  typeArr,
+  sort
+) => {
   const typeCondition = typeArr
     ? `INNER JOIN product_types t ON p.product_type_id = t.id`
     : "";
+
   let whereCondition = "";
-  if (category || typeArr) {
+  if (categoryId || typeArr) {
     whereCondition = "WHERE";
   }
 
-  const categoryCondition = category ? `c.name='${category}'` : "";
-  const subCondition = sub ? `AND s.name='${sub}'` : "";
+  const categoryCondition = categoryId ? `c.name='${categoryId}'` : "";
+  const subCondition = subCategoryId ? `AND s.name='${subCategoryId}'` : "";
 
   let andCondition = "";
-  if ((category && typeArr) || (sub && typeArr)) {
+  if ((categoryId && typeArr) || (subCategoryId && typeArr)) {
     andCondition = "AND";
   }
 
@@ -73,11 +80,11 @@ const getProductByID = async (start, limit, category, sub, typeArr, sort) => {
       ${andCondition}
       ${typeArrCondition}
       ${sortCondition}
-      LIMIT ?,?`,
-    [start, limit]
+      LIMIT ?,12`,
+    [start]
   );
 };
 
 module.exports = {
-  getProductByID,
+  getProductById,
 };
