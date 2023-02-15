@@ -20,10 +20,10 @@ const addProductToCart = async (userId, productId, quantity) => {
 const getCartsByUserId = async (userId) => {
   return await teaDataSource.query(
     `SELECT
-        p.name,
-        c.quantity,
-        p.price,
-        p.image_url
+        p.name AS product_id,
+        c.quantity AS quantity,
+        p.price AS product_price,
+        p.image_url AS product_main_image
       FROM carts c
       INNER JOIN users u ON c.user_id = u.id
       INNER JOIN products p ON c.product_id = p.id
