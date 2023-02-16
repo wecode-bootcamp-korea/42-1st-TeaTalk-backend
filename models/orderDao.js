@@ -75,6 +75,8 @@ const createOrders = async (
   deliveryMessage
 ) => {
   const queryRunner = teaDataSource.createQueryRunner();
+  const deliveryPriceNum = parseInt(deliveryPrice);
+  const totalPriceNum = parseInt(totalPrice);
   await queryRunner.connect();
   await queryRunner.startTransaction();
 
@@ -139,15 +141,20 @@ const createOrders = async (
 
     queryRunner.query(query, [values]);
 
-    await cart.forEach((c) => {
-      const deleteCartQuery = `
+    const getCartId = cart.map((el) => {
+      return [el.cartId];
+    });
+    for (let i = 0; i < getCartId.length; i++) {
+      const cartId = getCartId[i];
+      await queryRunner.query(
+        `
         DELETE FROM
           carts
         WHERE
-          id = ?`;
-
-      queryRunner.query(deleteCartQuery, [c.cartId]);
-    });
+          id = ?`,
+        [cartId]
+      );
+    }
 
     await queryRunner.query(
       `
@@ -156,15 +163,15 @@ const createOrders = async (
       SET
         point = point - ?
       WHERE id = ?`,
-      [totalPrice, userId]
+      [totalPriceNum + deliveryPriceNum, userId]
     );
 
     const [orderResult] = await queryRunner.query(
       `
       SELECT
         o.id,
-        o.price_amount as finalTotalPrice,
-        o.delivery_Price as deliveryPrice,
+        (o.price_amount + o.delivery_price) as finalTotalPrice,
+        o.delivery_price as deliveryPrice,
         u.name as userName,
         u.email as userEmail,
         u.phone_number as userPhoneNum,

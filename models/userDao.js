@@ -89,8 +89,26 @@ const getUserByAccount = async (userId) => {
   }
 };
 
+const getPointByuserId = async (userId) => {
+  try {
+    const userPoint = await teaDataSource.query(
+      `SELECT 
+        point
+      FROM users
+      WHERE id = ?`,
+      [userId]
+    );
+    return userPoint;
+  } catch (err) {
+    const error = new Error("INVALID USER!!");
+    error.statusCode = 500;
+    throw error;
+  }
+};
+
 module.exports = {
   createUser,
   getUserSimpleInfoByAccount,
   getUserByAccount,
+  getPointByuserId,
 };

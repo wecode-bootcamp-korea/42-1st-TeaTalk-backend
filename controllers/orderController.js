@@ -31,44 +31,48 @@ const getDirectOrder = async (req, res) => {
 };
 
 const createOrders = async (req, res) => {
-  const userId = req.user;
-  const {
-    cart,
-    totalPrice,
-    deliveryPrice,
-    receiverName,
-    receiverPhoneNum,
-    receiverZipcode,
-    receiverAddress,
-    deliveryMessage,
-  } = req.body;
+  try {
+    const userId = req.user;
+    const {
+      cart,
+      totalPrice,
+      deliveryPrice,
+      receiverName,
+      receiverPhoneNum,
+      receiverZipcode,
+      receiverAddress,
+      deliveryMessage,
+    } = req.body;
 
-  if (
-    !totalPrice ||
-    !deliveryPrice ||
-    !receiverName ||
-    !receiverPhoneNum ||
-    !receiverZipcode ||
-    !receiverAddress
-  ) {
-    const error = new Error("keyError!!");
-    error.statusCode = 400;
-    throw error;
+    if (
+      !totalPrice ||
+      !deliveryPrice ||
+      !receiverName ||
+      !receiverPhoneNum ||
+      !receiverZipcode ||
+      !receiverAddress
+    ) {
+      const error = new Error("keyError!!");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    const result = await orderService.createOrders(
+      userId,
+      cart,
+      totalPrice,
+      deliveryPrice,
+      receiverName,
+      receiverPhoneNum,
+      receiverZipcode,
+      receiverAddress,
+      deliveryMessage
+    );
+
+    return res.status(200).json({ data: result });
+  } catch (err) {
+    return res.status(err.statusCode || 500).json(err.message);
   }
-
-  const result = await orderService.createOrders(
-    userId,
-    cart,
-    totalPrice,
-    deliveryPrice,
-    receiverName,
-    receiverPhoneNum,
-    receiverZipcode,
-    receiverAddress,
-    deliveryMessage
-  );
-
-  return res.status(200).json({ data: result });
 };
 
 module.exports = {

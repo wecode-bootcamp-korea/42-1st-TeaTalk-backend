@@ -43,6 +43,11 @@ const ordererInfo = async (userId) => {
   return ordererInfo;
 };
 
+const getuserPoint = async (userId) => {
+  const [userPoint] = await userDao.getPointByuserId(userId);
+  return userPoint;
+};
+
 const createOrders = async (
   userId,
   cart,
@@ -54,6 +59,14 @@ const createOrders = async (
   receiverAddress,
   deliveryMessage
 ) => {
+  const checkUserPoint = await getuserPoint(userId);
+
+  if (Number(checkUserPoint.point) < Number(totalPrice)) {
+    const error = new Error("YOU NEED MORE POINT!!");
+    error.statusCode = 400;
+    throw error;
+  }
+
   return await orderDao.createOrders(
     userId,
     cart,
@@ -66,7 +79,6 @@ const createOrders = async (
     deliveryMessage
   );
 };
-
 module.exports = {
   getOrders,
   getDirectOrder,
