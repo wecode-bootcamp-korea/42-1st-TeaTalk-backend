@@ -92,7 +92,7 @@ const getProductById = async (productId) => {
       p.name AS productName,
       p.description AS description,
       p.price AS productPrice,
-      p.discount_price AS discountPrice,
+      p.discount_price AS productDiscountPrice,
       p.image_url AS productMainImage,
       s.name AS subcategoryName,
       c.name AS categoryName,
