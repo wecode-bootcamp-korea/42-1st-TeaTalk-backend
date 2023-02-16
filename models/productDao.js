@@ -1,7 +1,7 @@
 const { teaDataSource } = require("./datasource.js");
 
 const getProductList = async (
-  start = 0,
+  offset,
   categoryId,
   subCategoryId,
   typeArr,
@@ -80,8 +80,8 @@ const getProductList = async (
       ${andCondition}
       ${typeArrCondition}
       ${sortCondition}
-      LIMIT ?,12`,
-    [start]
+      LIMIT ?,8`,
+    [offset]
   );
 };
 

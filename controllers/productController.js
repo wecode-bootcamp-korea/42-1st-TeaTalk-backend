@@ -1,10 +1,10 @@
 const productService = require("../services/productService");
 
 const getProductList = async (req, res) => {
-  const { categoryId, subCategoryId, type, sort, offset = 1 } = req.query;
+  const { categoryId, subCategoryId, type, sort, page = 1 } = req.query;
   try {
     const lists = await productService.getProductList(
-      +offset,
+      +page,
       categoryId,
       subCategoryId,
       type,

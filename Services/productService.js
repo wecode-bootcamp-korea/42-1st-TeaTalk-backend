@@ -1,21 +1,15 @@
 const productDao = require("../models/productDao");
 
-const getProductList = async (
-  offset = 0,
-  categoryId,
-  subCategoryId,
-  type,
-  sort
-) => {
-  let start = 0;
-  if (offset <= 0) {
-    start = 0;
+const getProductList = async (page, categoryId, subCategoryId, type, sort) => {
+  let offset = 0;
+  if (page <= 0) {
+    offset = 0;
   } else {
-    start = (offset - 1) * 12;
+    offset = (page - 1) * 8;
   }
   const typeArr = type ? type.split(",") : "";
   const result = await productDao.getProductList(
-    start,
+    offset,
     categoryId,
     subCategoryId,
     typeArr,
