@@ -55,7 +55,6 @@ const login = async (account, password) => {
     error.statusCode = 400;
     throw error;
   }
-
   const payLoad = { id: userInfo.id };
   const secretKey = process.env.SECRET_KEY;
 

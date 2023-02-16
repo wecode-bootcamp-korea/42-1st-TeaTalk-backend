@@ -12,7 +12,6 @@ app.use(cors());
 app.use(morgan("tiny"));
 app.use(routes);
 
-//health check
 app.get("/ping", (req, res) => {
   res.status(200).json({ message: "pong" });
 });
