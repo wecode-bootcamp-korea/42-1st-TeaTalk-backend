@@ -2,9 +2,8 @@ const orderService = require("../services/orderService");
 const getOrders = async (req, res) => {
   try {
     const userId = req.user;
-    const { deliveryPrice } = req.body;
 
-    const orders = await orderService.getOrders(userId, deliveryPrice);
+    const orders = await orderService.getOrders(userId);
 
     return res.status(200).json(orders);
   } catch (err) {
