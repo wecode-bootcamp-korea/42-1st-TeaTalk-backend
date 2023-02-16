@@ -1,0 +1,50 @@
+const { teaDataSource } = require("./datasource.js");
+
+const createCart = async (userId, productId, quantity) => {
+  return await teaDataSource.query(
+    `INSERT INTO 
+      carts (
+      user_id,
+      product_id,
+      quantity
+      )
+      VALUE (
+        ?,
+        ?,
+        ?
+      ) ON DUPLICATE KEY UPDATE quantity = quantity + ?;`,
+    [userId, productId, quantity, quantity]
+  );
+};
+
+const getCartsByUserId = async (userId) => {
+  return await teaDataSource.query(
+    `SELECT
+        p.name AS productId,
+        c.quantity AS quantity,
+        p.price AS productPrice,
+        p.image_url AS productMainImage
+      FROM carts c
+      INNER JOIN users u ON c.user_id = u.id
+      INNER JOIN products p ON c.product_id = p.id
+      WHERE u.id = ?;`,
+    [userId]
+  );
+};
+
+const deleteCartById = async (userId, cartId) => {
+  return await teaDataSource.query(
+    `DELETE FROM
+      carts c
+      WHERE
+      c.user_id = ?
+      AND c.id IN (?);`,
+    [userId, cartId]
+  );
+};
+
+module.exports = {
+  createCart,
+  getCartsByUserId,
+  deleteCartById,
+};

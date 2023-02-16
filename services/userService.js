@@ -42,7 +42,11 @@ const createUser = async (
 };
 
 const login = async (account, password) => {
+<<<<<<< HEAD
   const [userInfo] = await userDao.getUserSimpleInfoByAccount(account);
+=======
+  const [userInfo] = await userDao.getUserByAccount(account);
+>>>>>>> main
   if (!userInfo) {
     const error = new Error("PLEASE SIGNUP!!");
     error.statusCode = 400;
@@ -55,7 +59,6 @@ const login = async (account, password) => {
     error.statusCode = 400;
     throw error;
   }
-
   const payLoad = { id: userInfo.id };
   const secretKey = process.env.SECRET_KEY;
 
