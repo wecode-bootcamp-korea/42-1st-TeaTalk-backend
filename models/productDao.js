@@ -91,9 +91,9 @@ const getProductById = async (productId) => {
       p.id AS product_id,
       p.name AS product_name,
       p.description AS description,
-      p.price AS price,
+      p.price AS product_price,
       p.discount_price AS discount_price,
-      p.image_url AS title_image,
+      p.image_url AS product_main_image,
       s.name AS subcategory_name,
       c.name AS category_name,
       pi.images
