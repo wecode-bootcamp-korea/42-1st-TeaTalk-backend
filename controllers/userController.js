@@ -36,7 +36,6 @@ const createUser = async (req, res) => {
 const login = async (req, res) => {
   try {
     const { account, password } = req.body;
-
     if (!account || !password) {
       const error = Error("PLEASE FILL IN ID AND PASSWORD!!!");
       error.statusCode = 400;
