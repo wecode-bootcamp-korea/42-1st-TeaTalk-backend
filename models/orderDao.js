@@ -81,9 +81,13 @@ const createOrders = async (
   await queryRunner.connect();
   await queryRunner.startTransaction();
   try {
+    console.log(addressCheck);
     let deliveryId = "";
 
-    if (!addressCheck) {
+    if (
+      !addressCheck ||
+      !(addressCheck.receiverZipcode === parseInt(receiverZipcode))
+    ) {
       const addressId = await queryRunner.query(
         `
       INSERT INTO deliveries
@@ -108,7 +112,10 @@ const createOrders = async (
       deliveryId = addressId.insertId;
     }
 
-    if (addressCheck) {
+    if (
+      addressCheck &&
+      addressCheck.receiverZipcode === parseInt(receiverZipcode)
+    ) {
       deliveryId = addressCheck.deliveryId;
     }
 
