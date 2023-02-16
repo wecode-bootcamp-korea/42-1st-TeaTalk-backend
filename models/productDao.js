@@ -53,11 +53,11 @@ const getProductList = async (
   }
   return await teaDataSource.query(
     `SELECT
-        p.id AS product_id,
-        p.name AS product_name,
-        p.price AS product_price,
-        p.discount_price AS product_discount_price,
-        p.image_url AS product_main_image, 
+        p.id AS productId,
+        p.name AS productName,
+        p.price AS productPrice,
+        p.discount_price AS productDiscountPrice,
+        p.image_url AS productMainImage, 
         pi.images
       FROM products AS p
       LEFT JOIN(
@@ -88,14 +88,14 @@ const getProductList = async (
 const getProductById = async (productId) => {
   return await teaDataSource.query(
     `SELECT
-      p.id AS product_id,
-      p.name AS product_name,
+      p.id AS productId,
+      p.name AS productName,
       p.description AS description,
-      p.price AS product_price,
-      p.discount_price AS discount_price,
-      p.image_url AS product_main_image,
-      s.name AS subcategory_name,
-      c.name AS category_name,
+      p.price AS productPrice,
+      p.discount_price AS discountPrice,
+      p.image_url AS productMainImage,
+      s.name AS subcategoryName,
+      c.name AS categoryName,
       pi.images
     FROM products AS p
     LEFT JOIN (
