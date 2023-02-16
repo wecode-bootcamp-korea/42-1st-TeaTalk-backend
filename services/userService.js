@@ -17,9 +17,7 @@ const createUser = async (
   birthdate,
   gender
 ) => {
-  //account 중복 체크
-  const [userInfo] = await userDao.getUserByAccount(account);
-
+  const [userInfo] = await userDao.getUserSimpleInfoByAccount(account);
   if (userInfo) {
     const error = new Error("THIS ID EXISTS ALREADY!!");
     error.statusCode = 400;
@@ -44,7 +42,7 @@ const createUser = async (
 };
 
 const login = async (account, password) => {
-  const [userInfo] = await userDao.getUserByAccount(account);
+  const [userInfo] = await userDao.getUserSimpleInfoByAccount(account);
   if (!userInfo) {
     const error = new Error("PLEASE SIGNUP!!");
     error.statusCode = 400;

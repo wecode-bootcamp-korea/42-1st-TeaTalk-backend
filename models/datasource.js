@@ -16,6 +16,7 @@ teaDataSource
   })
   .catch((err) => {
     console.log("Failed to connect database", err);
+    teaDataSource.destroy();
   });
 
 module.exports = {
