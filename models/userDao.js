@@ -11,7 +11,8 @@ const createUser = async (
 ) => {
   try {
     const result = await teaDataSource.query(
-      `INSERT INTO users (
+      `
+      INSERT INTO users (
         identification,
         password,
         email,
@@ -20,8 +21,7 @@ const createUser = async (
         birthdate,
         gender
         )
-      VALUE(?,?,?,?,?,?,?)
-      `,
+      VALUE(?,?,?,?,?,?,?)`,
       [account, hashedPw, email, name, phoneNum, birthdate, gender]
     );
     return result;
@@ -34,9 +34,9 @@ const createUser = async (
 
 const getUserSimpleInfoByAccount = async (account) => {
   try {
-    //return 없어서 계속 error났었음...
     return await teaDataSource.query(
-      `SELECT
+      `
+      SELECT
         id,
         identification,
         password,
@@ -54,15 +54,16 @@ const getUserSimpleInfoByAccount = async (account) => {
   }
 };
 
-//주소지를 포함한 유저의 모든 정보
 const getUserByAccount = async (userId) => {
   try {
     return await teaDataSource.query(
-      `SELECT
+      `
+      SELECT
         users.id,
         users.name,
         users.email,
         users.phone_number,
+        users.point,
         address.list as addressList
       FROM users
         INNER JOIN (

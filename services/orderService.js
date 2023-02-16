@@ -1,38 +1,40 @@
 const orderDao = require("../models/orderDao");
 const userDao = require("../models/userDao");
 
-const getOrderPageForCartItems = async (userId) => {
-  const cartItems = await orderDao.getOrderPageForCartItems(userId);
-  const deliveryPrice = await calculationForDeliveryPrice(cartItems);
+const getOrders = async (userId, deliveryPrice) => {
+  const cartItems = await orderDao.getOrders(userId);
   const userInfo = await ordererInfo(userId);
-  const info = await userBasicAddress(userId);
+  const basicAddress = await userBasicAddress(userId);
 
   const finalCart = { cartItems: cartItems };
   finalCart.deliveryPrice = deliveryPrice;
   finalCart.ordererInfo = userInfo;
 
-  if (info) {
-    finalCart.userBasicAddress = info;
+  if (basicAddress) {
+    finalCart.userBasicAddress = basicAddress;
   }
 
   return finalCart;
 };
 
-const calculationForDeliveryPrice = async (cartItems) => {
-  let delivery = 2500;
-  let totalPriceForOneCart = 0;
+const getDirectOrder = async (userId, productId, quantity, deliveryPrice) => {
+  const orderItem = await orderDao.getDirectOrder(userId, productId, quantity);
+  const userInfo = await ordererInfo(userId);
+  const basicAddress = await userBasicAddress(userId);
 
-  cartItems.forEach((el) => {
-    totalPriceForOneCart += Number(el.totalProductPriceWithQuantity);
-  });
+  const getOrderItem = { orderItem: orderItem };
+  getOrderItem.deliveryPrice = deliveryPrice;
+  getOrderItem.ordererInfo = userInfo;
 
-  const deliveryPrice = totalPriceForOneCart < 40000 ? delivery : 0;
+  if (basicAddress) {
+    getOrderItem.userBasicAddress = basicAddress;
+  }
 
-  return deliveryPrice;
+  return getOrderItem;
 };
 
 const userBasicAddress = async (userId) => {
-  const [info] = await orderDao.addressInfo(userId);
+  const [info] = await orderDao.getAddressByUserId(userId);
   return info;
 };
 
@@ -41,7 +43,7 @@ const ordererInfo = async (userId) => {
   return ordererInfo;
 };
 
-const orderResult = async (
+const createOrders = async (
   userId,
   cart,
   totalPrice,
@@ -52,7 +54,7 @@ const orderResult = async (
   receiverAddress,
   deliveryMessage
 ) => {
-  return await orderDao.orderResult(
+  return await orderDao.createOrders(
     userId,
     cart,
     totalPrice,
@@ -66,6 +68,7 @@ const orderResult = async (
 };
 
 module.exports = {
-  getOrderPageForCartItems,
-  orderResult,
+  getOrders,
+  getDirectOrder,
+  createOrders,
 };
