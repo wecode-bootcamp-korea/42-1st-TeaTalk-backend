@@ -63,6 +63,15 @@ const getAddressByUserId = async (userId) => {
   );
 };
 
+const getFinalPayPrice = (cart, deliveryPrice) => {
+  let payPrice = 0;
+  cart.forEach((cart) => {
+    payPrice += Number(cart.totalProductPriceWithQuantity);
+  });
+  let fianlPayPrice = payPrice + deliveryPrice;
+  return fianlPayPrice;
+};
+
 const createOrders = async (
   userId,
   cart,
@@ -77,11 +86,11 @@ const createOrders = async (
   const [addressCheck] = await getAddressByUserId(userId);
   const queryRunner = teaDataSource.createQueryRunner();
   const deliveryPriceNum = parseInt(deliveryPrice);
+  const fianlPayPrice = await getFinalPayPrice(cart, deliveryPriceNum);
   const totalPriceNum = parseInt(totalPrice);
   await queryRunner.connect();
   await queryRunner.startTransaction();
   try {
-    console.log(addressCheck);
     let deliveryId = "";
 
     if (
@@ -118,6 +127,12 @@ const createOrders = async (
     ) {
       deliveryId = addressCheck.deliveryId;
     }
+    console.log(fianlPayPrice);
+    if (!(Number(totalPrice) === fianlPayPrice)) {
+      const error = new Error("PAYAMOUNT IS NOT CORRECT!!!");
+      error.statusCode = 400;
+      throw error;
+    }
 
     const orders = await queryRunner.query(
       `
@@ -132,7 +147,7 @@ const createOrders = async (
     );
 
     const orderId = orders.insertId;
-    console.log(cart);
+
     let values = [];
     cart.forEach((c) => {
       values.push([
@@ -233,10 +248,8 @@ const createOrders = async (
     return orderResult;
   } catch (err) {
     console.log(err);
-    const error = new Error("INVALID DATA!!!");
-    error.statusCode = 500;
     await queryRunner.rollbackTransaction();
-    throw error;
+    throw err;
   } finally {
     await queryRunner.release();
   }
