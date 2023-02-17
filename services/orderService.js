@@ -1,13 +1,14 @@
 const orderDao = require("../models/orderDao");
 const userDao = require("../models/userDao");
 
-const getOrders = async (userId, deliveryPrice) => {
+const getOrders = async (userId) => {
   const cartItems = await orderDao.getOrders(userId);
+  const deliveryFee = await calculationForDeliveryPrice(cartItems);
   const userInfo = await ordererInfo(userId);
   const basicAddress = await userBasicAddress(userId);
 
   const finalCart = { cartItems: cartItems };
-  finalCart.deliveryPrice = deliveryPrice;
+  finalCart.deliveryPrice = deliveryFee;
   finalCart.ordererInfo = userInfo;
 
   if (basicAddress) {
@@ -19,11 +20,12 @@ const getOrders = async (userId, deliveryPrice) => {
 
 const getDirectOrder = async (userId, productId, quantity, deliveryPrice) => {
   const orderItem = await orderDao.getDirectOrder(userId, productId, quantity);
+  const deliveryFee = await calculationForDeliveryPrice(cartItems);
   const userInfo = await ordererInfo(userId);
   const basicAddress = await userBasicAddress(userId);
 
   const getOrderItem = { orderItem: orderItem };
-  getOrderItem.deliveryPrice = deliveryPrice;
+  getOrderItem.deliveryPrice = deliveryFee;
   getOrderItem.ordererInfo = userInfo;
 
   if (basicAddress) {
@@ -31,6 +33,19 @@ const getDirectOrder = async (userId, productId, quantity, deliveryPrice) => {
   }
 
   return getOrderItem;
+};
+
+const calculationForDeliveryPrice = async (cartItems) => {
+  let delivery = 2500;
+  let totalPriceForOneCart = 0;
+
+  cartItems.forEach((el) => {
+    totalPriceForOneCart += Number(el.totalProductPriceWithQuantity);
+  });
+
+  const deliveryPrice = totalPriceForOneCart < 40000 ? delivery : 0;
+
+  return deliveryPrice;
 };
 
 const userBasicAddress = async (userId) => {

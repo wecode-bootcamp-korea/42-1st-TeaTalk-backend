@@ -26,7 +26,7 @@ const getOrders = async (userId) => {
   }
 };
 
-const getDirectOrder = async (userId, productId, quantity) => {
+const getDirectOrder = async (productId, quantity) => {
   try {
     const quantityToNumber = Number(quantity);
     return await teaDataSource.query(
@@ -49,10 +49,10 @@ const getDirectOrder = async (userId, productId, quantity) => {
 };
 
 const getAddressByUserId = async (userId) => {
-  return teaDataSource.query(
+  return await teaDataSource.query(
     `
     SELECT
-      d.id,
+      d.id as deliveryId,
       d.receiver_name as receiverName,
       d.receiver_phone_number as receiverPhoneNum,
       d.receiver_zipcode as receiverZipcode,
@@ -61,6 +61,15 @@ const getAddressByUserId = async (userId) => {
     WHERE d.user_id = ?`,
     [userId]
   );
+};
+
+const getFinalPayPrice = (cart, deliveryPrice) => {
+  let payPrice = 0;
+  cart.forEach((cart) => {
+    payPrice += Number(cart.totalProductPriceWithQuantity);
+  });
+  let fianlPayPrice = payPrice + deliveryPrice;
+  return fianlPayPrice;
 };
 
 const createOrders = async (
@@ -74,15 +83,22 @@ const createOrders = async (
   receiverAddress,
   deliveryMessage
 ) => {
+  const [addressCheck] = await getAddressByUserId(userId);
   const queryRunner = teaDataSource.createQueryRunner();
   const deliveryPriceNum = parseInt(deliveryPrice);
+  const fianlPayPrice = await getFinalPayPrice(cart, deliveryPriceNum);
   const totalPriceNum = parseInt(totalPrice);
   await queryRunner.connect();
   await queryRunner.startTransaction();
-
   try {
-    const addressId = await queryRunner.query(
-      `
+    let deliveryId = "";
+
+    if (
+      !addressCheck ||
+      !(addressCheck.receiverZipcode === parseInt(receiverZipcode))
+    ) {
+      const addressId = await queryRunner.query(
+        `
       INSERT INTO deliveries
         (user_id,
         receiver_name,
@@ -92,17 +108,31 @@ const createOrders = async (
         delivery_message
         )
       VALUES (?,?,?,?,?,?)`,
-      [
-        userId,
-        receiverName,
-        receiverPhoneNum,
-        receiverZipcode,
-        receiverAddress,
-        deliveryMessage,
-      ]
-    );
+        [
+          userId,
+          receiverName,
+          receiverPhoneNum,
+          receiverZipcode,
+          receiverAddress,
+          deliveryMessage,
+        ]
+      );
 
-    const deliveryId = addressId.insertId;
+      deliveryId = addressId.insertId;
+    }
+
+    if (
+      addressCheck &&
+      addressCheck.receiverZipcode === parseInt(receiverZipcode)
+    ) {
+      deliveryId = addressCheck.deliveryId;
+    }
+    console.log(fianlPayPrice);
+    if (!(Number(totalPrice) === fianlPayPrice)) {
+      const error = new Error("PAYAMOUNT IS NOT CORRECT!!!");
+      error.statusCode = 400;
+      throw error;
+    }
 
     const orders = await queryRunner.query(
       `
@@ -117,7 +147,7 @@ const createOrders = async (
     );
 
     const orderId = orders.insertId;
-    console.log(cart);
+
     let values = [];
     cart.forEach((c) => {
       values.push([
@@ -169,7 +199,7 @@ const createOrders = async (
     const [orderResult] = await queryRunner.query(
       `
       SELECT
-        o.id,
+        o.id as orderNumber,
         (o.price_amount + o.delivery_price) as finalTotalPrice,
         o.delivery_price as deliveryPrice,
         u.name as userName,
@@ -219,6 +249,7 @@ const createOrders = async (
   } catch (err) {
     console.log(err);
     await queryRunner.rollbackTransaction();
+    throw err;
   } finally {
     await queryRunner.release();
   }
