@@ -38,7 +38,7 @@
 
 <br>
 
-## 💻 기술 스택
+### 💻 기술 스택
 
 Frond-End
 <img src="https://img.shields.io/badge/Javscript-F7DF1E?style=flat&amp;logo=javascript&amp;logoColor=white">
@@ -90,6 +90,7 @@ Communication
 
 <br>
 <br>
+
 ### 🖥️ Front-end
 
 | 기능                              | 구현 내용                                                                                                                                                                                  | 개발 담당          |
