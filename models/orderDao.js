@@ -209,7 +209,8 @@ const createOrders = async (
         d.receiver_name as receiverName,
         d.receiver_phone_number as receiverPhoneNum,
         d.receiver_zipcode as receiverZipcode,
-        d.receiver_address as receiverAddress
+        d.receiver_address as receiverAddress,
+        oiList
       FROM orders o
       INNER JOIN deliveries d ON o.delivery_id = d.id
       INNER JOIN users u ON o.user_id = u.id
